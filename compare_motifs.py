@@ -24,13 +24,13 @@ class Motif:
         """
         raise Exception('Function not Implemented')
         
-    def _get_object_string(self)
+    def _get_object_string(self):
         """
         builds a string output representation of the the Motif object
         """
         output = 'This is the list of promtore in this motif:\n'
         output += '\n'
-        output += "The motif was generated from " + self.fasta_file +"\n'
+        output += "The motif was generated from " + self.fasta_file +'\n'
         for each in self.motif:
              output+=str(each)+'\n'
         return output
@@ -65,7 +65,7 @@ class DNA:
         """
         raise Exception('Function not implemented')
         
-    def _get_object_string(self)
+    def _get_object_string(self):
         """
         builds a string output representation of the the Motif object
         """
@@ -100,7 +100,8 @@ class app:
 
     def parse_motifs(self):
         pssm_tmp = {'A':[],'C':[],'G':[],'T':[]}
-        for key in pssm.get_keys():
+        print self.motif1
+        for key in pssm_tmp.keys():
             pssm_tmp[key] = [0]*len(self.motif1)
 
         pssm1 = pssm_tmp
@@ -121,7 +122,7 @@ class app:
     def parse_args(self, args):
         i=0
         try:
-            while( i<=len(args)-1 ):
+            while( i<len(args) ):
                 if args[i] == '-m1':
                     i+=1
                     self.m1_file = args[i]
@@ -132,31 +133,33 @@ class app:
                     i+=1
                     self.genbank_file = args[i]
                 else:
-                    raise Exception('Arg parsing error')
+                    raise Exception('Parsing Error: invalid arg')
                 i+=1
-        except:
+        except Exception as e:
+            print e
+            print args
             print 'ERROR: '+' '.join(sys.argv) + '\n'
             self.usage()
         
     def initialize_data(self):
         self.motif1 = Motif(self.m1_file)
         motif = open(self.m1_file, 'r')
-        for each in AlignIO.parse(fasta, "fasta")
+        for each in AlignIO.parse(motif, "fasta"):
             self.motif1.add_promoter(each)
         motif.close()
         
         self.motif2 = Motif(self.m2_file)
         motif = open(self.m2_file, 'r')
-        for each in AlignIO.parse(fasta, "fasta")
+        for each in AlignIO.parse(motif, "fasta"):
             self.motif2.add_promoter(each)
         motif.close()
         
-        self.seq_data = DNA(self.genbank_file)
+        #self.seq_data = DNA(self.genbank_file)
         
     def main(self, args):
         self.parse_args(args)
         self.initialize_data()
-        if genbank_file == '':
+        if self.genbank_file == '':
             self.parse_motifs()
         else:
             self.parse_motifs_with_background()
@@ -164,6 +167,6 @@ class app:
 if __name__=='__main__':
     try:
         a=app()
-        a.main(sys.argv)
+        a.main(sys.argv[1:])
     except KeyboardInterrupt:
         sys.exit(0)
